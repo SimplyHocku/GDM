@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.util.List;
 
 public class CreateExcelFile {
-    static String osName = System.getProperty("os.name");
+    static String osName = System.getProperty("os.name").toLowerCase();
 
     public static void main(String[] args) throws IOException {
         JiraPage page = new JiraPage();
@@ -85,14 +85,17 @@ public class CreateExcelFile {
             rowNumber += 1;
         }
         File path = null;
-        if (osName.equalsIgnoreCase("linux")) {
-            path = new File("/home/" + System.getProperty("user.name") + File.separator + "гдщка.xlsx");
-        } else if (osName.equalsIgnoreCase("win")) {
+        if (osName.contains("linux")) {
+            path = new File("/home/" + System.getProperty("user.name") + File.separator + "гдшка.xlsx");
+        } else if (osName.contains("win")) {
             path = new File(System.getProperty("user.home") + File.separator + "Desktop");
             if (!path.exists()) {
                 path = new File(System.getProperty("user.home") + File.separator + "Рабочий стол");
             }
             path = new File(path + File.separator + "гдшка.xlsx");
+        } else {
+            System.out.println("Неподдерживаемая операционная система: " + osName);
+            return;
         }
 
 
