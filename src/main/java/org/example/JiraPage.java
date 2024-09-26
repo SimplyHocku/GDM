@@ -5,6 +5,7 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -31,7 +32,11 @@ public class JiraPage {
     static String firstTab, secondTab;
 
     {
-        this.readData();
+        try {
+            this.readData();
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
         String loginUrl = "https://jira.mos.social/login.jsp?os_destination=%2Fsecure%2FMyJiraHome.jspa";
         Selenide.open(loginUrl);
         this.driver = WebDriverRunner.getWebDriver();
@@ -59,8 +64,17 @@ public class JiraPage {
 
     }
 
-    private void readData() {
-        String filePath = "/home/hocku/PFLPS.txt";
+    private void readData() throws FileNotFoundException {
+        String filePath;
+        if (System.getProperty("os.name").equalsIgnoreCase("win")) {
+            filePath = "C:/PFLPS.txt";
+        } else {
+            filePath = "/home/" + System.getProperty("user.name") + File.separator + "PFLPS.txt";
+        }
+
+        if (!new File(filePath).exists()){
+            throw new FileNotFoundException("Укажите файл с данными для выборки!");
+        }
         try {
             List<String> lines = Files.readAllLines(Paths.get(filePath));
 

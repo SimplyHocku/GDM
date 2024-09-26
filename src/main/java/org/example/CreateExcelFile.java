@@ -7,13 +7,15 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 
 public class CreateExcelFile {
+    static String osName = System.getProperty("os.name");
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         JiraPage page = new JiraPage();
         ElementsCollection tasks = page.start().getRowContent();
         if (tasks.isEmpty()) {
@@ -82,8 +84,23 @@ public class CreateExcelFile {
             page.getDriver().switchTo().window(page.getTab(0));
             rowNumber += 1;
         }
+        File path = null;
+        if (osName.equalsIgnoreCase("linux")) {
+            path = new File("/home/" + System.getProperty("user.name") + File.separator + "гдщка.xlsx");
+        } else if (osName.equalsIgnoreCase("win")) {
+            path = new File(System.getProperty("user.home") + File.separator + "Desktop");
+            if (!path.exists()) {
+                path = new File(System.getProperty("user.home") + File.separator + "Рабочий стол");
+            }
+            path = new File(path + File.separator + "гдшка.xlsx");
+        }
 
-        try (FileOutputStream fileOut = new FileOutputStream("гдшка.xlsx")) {
+
+        assert path != null;
+        if (!path.exists()) {
+            path.createNewFile();
+        }
+        try (FileOutputStream fileOut = new FileOutputStream(path)) {
             workbook.write(fileOut);
         } catch (IOException e) {
             e.printStackTrace();
