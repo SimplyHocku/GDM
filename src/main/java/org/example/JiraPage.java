@@ -66,12 +66,16 @@ public class JiraPage {
 
     private void readData() throws FileNotFoundException {
         String filePath;
-        if (System.getProperty("os.name").equalsIgnoreCase("win")) {
-            filePath = "C:/PFLPS.txt";
+        if (System.getProperty("os.name").toLowerCase().contains("win")) {
+            filePath = System.getProperty("user.home") + File.separator + "Desktop";
+            if (!new File(filePath).exists()) {
+                filePath = System.getProperty("user.home") + File.separator + "Рабочий стол";
+            }
+            filePath = filePath + File.separator + "PFLPS.txt";
         } else {
-            filePath = "/home/" + System.getProperty("user.name") + File.separator + "PFLPS.txt";
+            filePath = System.getProperty("user.home") + File.separator + "PFLPS.txt";
         }
-
+        System.out.println(filePath);
         if (!new File(filePath).exists()){
             throw new FileNotFoundException("Укажите файл с данными для выборки!");
         }
