@@ -92,7 +92,7 @@ public class JiraPage {
                 } else if (row == 3) {
                     password = lines.get(row);
                 } else if (row == 4) {
-                    status = lines.get(row);
+                    status = lines.get(row).toUpperCase();
                     if (status.contains("IN PROGRESS")) {
                         status = status.replace("IN PROGRESS", "\"IN%20PROGRESS\"");
                         lines.set(4, status);
@@ -101,8 +101,8 @@ public class JiraPage {
                         status = status.replace("TO DO", "\"TO%20DO\"");
                         lines.set(4, status);
                     }
-                    if (status.contains("Waiting for release")) {
-                        status = status.replace("Waiting for release", "\"Waiting%20for%20release\"");
+                    if (status.contains("WAITING FOR RELEASE")) {
+                        status = status.replace("WAITING FOR RELEASE", "\"Waiting%20for%20release\"");
                         lines.set(4, status);
                     }
                     if (lines.get(row).split(",").length > 1) {
