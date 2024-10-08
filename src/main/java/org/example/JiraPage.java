@@ -76,7 +76,7 @@ public class JiraPage {
             filePath = System.getProperty("user.home") + File.separator + "PFLPS.txt";
         }
         System.out.println(filePath);
-        if (!new File(filePath).exists()){
+        if (!new File(filePath).exists()) {
             throw new FileNotFoundException("Укажите файл с данными для выборки!");
         }
         try {
@@ -93,6 +93,18 @@ public class JiraPage {
                     password = lines.get(row);
                 } else if (row == 4) {
                     status = lines.get(row);
+                    if (status.contains("IN PROGRESS")) {
+                        status = status.replace("IN PROGRESS", "\"IN%20PROGRESS\"");
+                        lines.set(4, status);
+                    }
+                    if (status.contains("TO DO")) {
+                        status = status.replace("TO DO", "\"TO%20DO\"");
+                        lines.set(4, status);
+                    }
+                    if (status.contains("Waiting for release")) {
+                        status = status.replace("Waiting for release", "\"Waiting%20for%20release\"");
+                        lines.set(4, status);
+                    }
                     if (lines.get(row).split(",").length > 1) {
                         String[] statuses = lines.get(row).split(",");
                         status = String.join("%2C%20", statuses);
@@ -100,9 +112,11 @@ public class JiraPage {
                     urlSearch = "https://jira.mos.social/issues/?jql=project%%20%%3D%%20%s%%20AND%%20fixVersion%%20%%3D%%20%s%%20and%%20status%%20in%%20(%s)%%20%%20%%20ORDER%%20BY%%20priority%%20DESC%%2C%%20key%%20ASC".formatted(project, fixVersion, status);
                 }
             }
-        } catch (IOException e) {
+        } catch (
+                IOException e) {
             e.printStackTrace();
         }
+
     }
 
     public JiraPage start() {
